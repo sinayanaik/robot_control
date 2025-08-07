@@ -7,7 +7,7 @@ from ament_index_python.packages import get_package_share_path
 
 def generate_launch_description():
 
-    pkg_share = get_package_share_path('kiko_description')
+    pkg_share = get_package_share_path('arm_description')
     urdf_path = os.path.join(pkg_share, 'urdf', 'Kikobot.urdf')
     rviz_config_path = os.path.join(pkg_share, 'rviz', 'config.rviz')
     

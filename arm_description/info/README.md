@@ -126,12 +126,12 @@ world [⚓]
 ## Usage
 1. Launch with RViz visualization:
    ```bash
-   ros2 launch kiko_description rviz_launch.py
+   ros2 launch arm_description rviz_launch.py
    ```
 
 2. View with URDF visualizer:
    ```bash
-   urdf-viz src/kiko_description/urdf/Kikobot.urdf
+   urdf-viz src/arm_description/urdf/Kikobot.urdf
    ```
 
 ## Technical Specifications

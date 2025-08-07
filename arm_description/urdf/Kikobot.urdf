@@ -17,13 +17,13 @@
         <visual name="Base_visual">
             <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 0.0" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Base_collision">
             <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 0.0" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -36,13 +36,13 @@
         <visual name="Arm-1_visual">
             <origin xyz="-2.8416335229319856e-10 -2.2237225545673756e-09 -0.08525000477588429" rpy="1.5707963267948957 -3.633789175993528e-17 -1.5707963267948968" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-1_collision">
             <origin xyz="-2.8416335229319856e-10 -2.2237225545673756e-09 -0.08525000477588429" rpy="1.5707963267948957 -3.633789175993528e-17 -1.5707963267948968" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -55,13 +55,13 @@
         <visual name="Arm-2_visual">
             <origin xyz="0.006000002223722634 4.77588471881063e-09 -2.841633539585331e-10" rpy="-3.141592653589793 1.5707963267948957 0" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-2_collision">
             <origin xyz="0.006000002223722634 4.77588471881063e-09 -2.841633539585331e-10" rpy="-3.141592653589793 1.5707963267948957 0" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -74,13 +74,13 @@
         <visual name="Arm-3_visual">
             <origin xyz="-2.8416321629087804e-10 4.77588471881063e-09 -2.22372277924876e-09" rpy="-3.1415926535897913 9.940834058912084e-17 1.1696762940351957e-15" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-3_collision">
             <origin xyz="-2.8416321629087804e-10 4.77588471881063e-09 -2.22372277924876e-09" rpy="-3.1415926535897913 9.940834058912084e-17 1.1696762940351957e-15" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -93,13 +93,13 @@
         <visual name="Arm-4_visual">
             <origin xyz="-2.841630741823309e-10 4.77588471881063e-09 -0.08820000222372298" rpy="1.5707963267948968 8.582316144306066e-18 1.5707963267948977" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-4_collision">
             <origin xyz="-2.841630741823309e-10 4.77588471881063e-09 -0.08820000222372298" rpy="1.5707963267948968 8.582316144306066e-18 1.5707963267948977" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -112,13 +112,13 @@
         <visual name="Arm-5_visual">
             <origin xyz="2.2237231434019124e-09 -0.08820000477588473 2.841631274730361e-10" rpy="-1.1084439540778281e-15 -8.665525745064211e-18 1.117026270222134e-15" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-5_collision">
             <origin xyz="2.2237231434019124e-09 -0.08820000477588473 2.841631274730361e-10" rpy="-1.1084439540778281e-15 -8.665525745064211e-18 1.117026270222134e-15" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -131,13 +131,13 @@
         <visual name="End-Coupler-v1_visual">
             <origin xyz="-0.00919999777627698 -4.775884789864904e-09 2.8416296760092055e-10" rpy="-1.1084439540778271e-15 -8.665525745064204e-18 1.117026270222134e-15" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="End-Coupler-v1_collision">
             <origin xyz="-0.00919999777627698 -4.775884789864904e-09 2.8416296760092055e-10" rpy="-1.1084439540778271e-15 -8.665525745064204e-18 1.117026270222134e-15" />
             <geometry>
-                <mesh filename="package://kiko_description/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="package://arm_description/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
