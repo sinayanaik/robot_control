@@ -1,245 +1,253 @@
-<?xml version='1.0'?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="Kikobot">
-  <link name="world"/>
-  <link name="base_link"/>
+<robot name="Kikobot">
+  <link name="world" />
+  <material name="ur_accent">
+    <color rgba="0.11 0.53 0.80 1.0" />
+  </material>
+  <material name="ur_light">
+    <color rgba="0.75 0.78 0.80 1.0" />
+  </material>
+  <material name="ur_dark">
+    <color rgba="0.20 0.20 0.22 1.0" />
+  </material>
+  <link name="base_link" />
   <joint name="world_to_base_link" type="fixed">
-    <parent link="world"/>
-    <child link="base_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="world" />
+    <child link="base_link" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
-  <!-- Root link has no inertia; keep URDF valid for TF without referencing 'world' -->
   <joint name="base_link_to_Base" type="fixed">
-    <parent link="base_link"/>
-    <child link="Base"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_link" />
+    <child link="Base" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
-
-  <!-- Include the original URDF content -->
-  <!-- Begin inlined URDF -->
-
-
-    <link name="Base">
-        <inertial>
-            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
-            <mass value="5.0" />
-            <inertia ixx="0.05" iyy="0.05" izz="0.05" ixy="0.0" iyz="0.0" ixz="0.0" />
-        </inertial>
-        <visual name="Base_visual">
-            <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 0.0" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </visual>
-        <collision name="Base_collision">
-            <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 0.0" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </collision>
-    </link>
-    <link name="Arm-1">
-        <inertial>
-            <origin xyz="-3.6304707242452993e-07 0.010665014372753847 0.040245339023033594" rpy="0.0 -0.0 0.0" />
-            <mass value="1.0687641914182047" />
-            <inertia ixx="0.0006704983115528758" iyy="0.0006302195772532951" izz="0.00047579424085602586" ixy="-1.4787025792949149e-08" iyz="-8.8277299021493e-05" ixz="8.532466355455287e-10" />
-        </inertial>
-        <visual name="Arm-1_visual">
-            <origin xyz="-2.8416335229319856e-10 -2.2237225545673756e-09 -0.08525000477588429" rpy="1.5707963267948957 -3.633789175993528e-17 -1.5707963267948968" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </visual>
-        <collision name="Arm-1_collision">
-            <origin xyz="-2.8416335229319856e-10 -2.2237225545673756e-09 -0.08525000477588429" rpy="1.5707963267948957 -3.633789175993528e-17 -1.5707963267948968" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </collision>
-    </link>
-    <link name="Arm-2">
-        <inertial>
-            <origin xyz="-0.027291010656999373 -0.06388820650531735 -1.641718291026939e-06" rpy="-8.273537535917836e-95 -0.0 0.0" />
-            <mass value="2.5174323442199595" />
-            <inertia ixx="0.00827768866501688" iyy="0.0010318713526725736" izz="0.008358676284779695" ixy="2.0057600796929975e-06" iyz="-3.228897552142503e-08" ixz="-1.5244081456523742e-07" />
-        </inertial>
-        <visual name="Arm-2_visual">
-            <origin xyz="0.006000002223722634 4.77588471881063e-09 -2.841633539585331e-10" rpy="-3.141592653589793 1.5707963267948957 0" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </visual>
-        <collision name="Arm-2_collision">
-            <origin xyz="0.006000002223722634 4.77588471881063e-09 -2.841633539585331e-10" rpy="-3.141592653589793 1.5707963267948957 0" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </collision>
-    </link>
-    <link name="Arm-3">
-        <inertial>
-            <origin xyz="1.8543469611724262e-05 -0.057005310441065514 -0.03247369693935606" rpy="0.0 -0.0 0.0" />
-            <mass value="2.151814339999089" />
-            <inertia ixx="0.005888540515035262" iyy="0.0008708559635928294" izz="0.0057263162332367445" ixy="-6.593336986642092e-07" iyz="-4.838011570502867e-06" ixz="3.4690652990595286e-07" />
-        </inertial>
-        <visual name="Arm-3_visual">
-            <origin xyz="-2.8416321629087804e-10 4.77588471881063e-09 -2.22372277924876e-09" rpy="-3.1415926535897913 9.940834058912084e-17 1.1696762940351957e-15" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </visual>
-        <collision name="Arm-3_collision">
-            <origin xyz="-2.8416321629087804e-10 4.77588471881063e-09 -2.22372277924876e-09" rpy="-3.1415926535897913 9.940834058912084e-17 1.1696762940351957e-15" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </collision>
-    </link>
-    <link name="Arm-4">
-        <inertial>
-            <origin xyz="-8.052563208113539e-09 -0.011556756628656828 0.03920598399088505" rpy="0.0 -0.0 1.8991135491519597e-65" />
-            <mass value="0.8426528791869017" />
-            <inertia ixx="0.00048347311744847965" iyy="0.00043703135637857254" izz="0.0003223678317791079" ixy="5.704951159916927e-12" iyz="6.865614772375711e-05" ixz="2.2478942401330405e-10" />
-        </inertial>
-        <visual name="Arm-4_visual">
-            <origin xyz="-2.841630741823309e-10 4.77588471881063e-09 -0.08820000222372298" rpy="1.5707963267948968 8.582316144306066e-18 1.5707963267948977" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </visual>
-        <collision name="Arm-4_collision">
-            <origin xyz="-2.841630741823309e-10 4.77588471881063e-09 -0.08820000222372298" rpy="1.5707963267948968 8.582316144306066e-18 1.5707963267948977" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </collision>
-    </link>
-    <link name="Arm-5">
-        <inertial>
-            <origin xyz="-0.008913001864035071 0.03992149604931242 -1.6722706487420914e-07" rpy="0.0 -0.0 0.0" />
-            <mass value="0.9000824732764201" />
-            <inertia ixx="0.00047618595149007126" iyy="0.00043166919952895236" izz="0.0005977314701192393" ixy="4.46145660282643e-05" iyz="4.9214216731822275e-09" ixz="4.844480959961849e-09" />
-        </inertial>
-        <visual name="Arm-5_visual">
-            <origin xyz="2.2237231434019124e-09 -0.08820000477588473 2.841631274730361e-10" rpy="-1.1084439540778281e-15 -8.665525745064211e-18 1.117026270222134e-15" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </visual>
-        <collision name="Arm-5_collision">
-            <origin xyz="2.2237231434019124e-09 -0.08820000477588473 2.841631274730361e-10" rpy="-1.1084439540778281e-15 -8.665525745064211e-18 1.117026270222134e-15" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </collision>
-    </link>
-    <link name="End-Coupler-v1">
-        <inertial>
-            <origin xyz="-0.003390537594555969 -4.775884789864904e-09 2.841748064641436e-10" rpy="0.0 -0.0 0.0" />
-            <mass value="0.1162770105689689" />
-            <inertia ixx="4.070444495868353e-05" iyy="2.169606026503892e-05" izz="2.1696060266696016e-05" ixy="-1.734723475976807e-18" iyz="2.0328790734103208e-20" ixz="-2.591920818598159e-19" />
-        </inertial>
-        <visual name="End-Coupler-v1_visual">
-            <origin xyz="-0.00919999777627698 -4.775884789864904e-09 2.8416296760092055e-10" rpy="-1.1084439540778271e-15 -8.665525745064204e-18 1.117026270222134e-15" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </visual>
-        <collision name="End-Coupler-v1_collision">
-            <origin xyz="-0.00919999777627698 -4.775884789864904e-09 2.8416296760092055e-10" rpy="-1.1084439540778271e-15 -8.665525745064204e-18 1.117026270222134e-15" />
-            <geometry>
-                <mesh filename="file://$(find arm_description)/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
-            </geometry>
-        </collision>
-    </link>
-    <joint name="Base_Revolute-1" type="revolute">
-        <origin xyz="0.00065556 0.0 0.08255024" rpy="0.0 0.0 0.0" />
-        <parent link="Base" />
-        <child link="Arm-1" />
-        <axis xyz="0.0 0.0 1.0" />
-        <limit lower="-2.879793" upper="2.879793" effort="1000000" velocity="1000000" />
+  <link name="Base">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <mass value="5.0" />
+      <inertia ixx="0.05" iyy="0.05" izz="0.05" ixy="0.0" iyz="0.0" ixz="0.0" />
+    </inertial>
+    <visual name="Base_visual">
+      <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 0.0" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="ur_dark" />
+    </visual>
+    <collision name="Base_collision">
+      <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 0.0" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Arm-1">
+    <inertial>
+      <origin xyz="-3.6304707242452993e-07 0.010665014372753847 0.040245339023033594" rpy="0.0 -0.0 0.0" />
+      <mass value="1.0687641914182047" />
+      <inertia ixx="0.0006704983115528758" iyy="0.0006302195772532951" izz="0.00047579424085602586" ixy="-1.4787025792949149e-08" iyz="-8.8277299021493e-05" ixz="8.532466355455287e-10" />
+    </inertial>
+    <visual name="Arm-1_visual">
+      <origin xyz="-2.8416335229319856e-10 -2.2237225545673756e-09 -0.08525000477588429" rpy="1.5707963267948957 -3.633789175993528e-17 -1.5707963267948968" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="ur_light" />
+    </visual>
+    <collision name="Arm-1_collision">
+      <origin xyz="-2.8416335229319856e-10 -2.2237225545673756e-09 -0.08525000477588429" rpy="1.5707963267948957 -3.633789175993528e-17 -1.5707963267948968" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Arm-2">
+    <inertial>
+      <origin xyz="-0.027291010656999373 -0.06388820650531735 -1.641718291026939e-06" rpy="-8.273537535917836e-95 -0.0 0.0" />
+      <mass value="2.5174323442199595" />
+      <inertia ixx="0.00827768866501688" iyy="0.0010318713526725736" izz="0.008358676284779695" ixy="2.0057600796929975e-06" iyz="-3.228897552142503e-08" ixz="-1.5244081456523742e-07" />
+    </inertial>
+    <visual name="Arm-2_visual">
+      <origin xyz="0.006000002223722634 4.77588471881063e-09 -2.841633539585331e-10" rpy="-3.141592653589793 1.5707963267948957 0" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="ur_accent" />
+    </visual>
+    <collision name="Arm-2_collision">
+      <origin xyz="0.006000002223722634 4.77588471881063e-09 -2.841633539585331e-10" rpy="-3.141592653589793 1.5707963267948957 0" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Arm-3">
+    <inertial>
+      <origin xyz="1.8543469611724262e-05 -0.057005310441065514 -0.03247369693935606" rpy="0.0 -0.0 0.0" />
+      <mass value="2.151814339999089" />
+      <inertia ixx="0.005888540515035262" iyy="0.0008708559635928294" izz="0.0057263162332367445" ixy="-6.593336986642092e-07" iyz="-4.838011570502867e-06" ixz="3.4690652990595286e-07" />
+    </inertial>
+    <visual name="Arm-3_visual">
+      <origin xyz="-2.8416321629087804e-10 4.77588471881063e-09 -2.22372277924876e-09" rpy="-3.1415926535897913 9.940834058912084e-17 1.1696762940351957e-15" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="ur_light" />
+    </visual>
+    <collision name="Arm-3_collision">
+      <origin xyz="-2.8416321629087804e-10 4.77588471881063e-09 -2.22372277924876e-09" rpy="-3.1415926535897913 9.940834058912084e-17 1.1696762940351957e-15" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Arm-4">
+    <inertial>
+      <origin xyz="-8.052563208113539e-09 -0.011556756628656828 0.03920598399088505" rpy="0.0 -0.0 1.8991135491519597e-65" />
+      <mass value="0.8426528791869017" />
+      <inertia ixx="0.00048347311744847965" iyy="0.00043703135637857254" izz="0.0003223678317791079" ixy="5.704951159916927e-12" iyz="6.865614772375711e-05" ixz="2.2478942401330405e-10" />
+    </inertial>
+    <visual name="Arm-4_visual">
+      <origin xyz="-2.841630741823309e-10 4.77588471881063e-09 -0.08820000222372298" rpy="1.5707963267948968 8.582316144306066e-18 1.5707963267948977" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="ur_accent" />
+    </visual>
+    <collision name="Arm-4_collision">
+      <origin xyz="-2.841630741823309e-10 4.77588471881063e-09 -0.08820000222372298" rpy="1.5707963267948968 8.582316144306066e-18 1.5707963267948977" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Arm-5">
+    <inertial>
+      <origin xyz="-0.008913001864035071 0.03992149604931242 -1.6722706487420914e-07" rpy="0.0 -0.0 0.0" />
+      <mass value="0.9000824732764201" />
+      <inertia ixx="0.00047618595149007126" iyy="0.00043166919952895236" izz="0.0005977314701192393" ixy="4.46145660282643e-05" iyz="4.9214216731822275e-09" ixz="4.844480959961849e-09" />
+    </inertial>
+    <visual name="Arm-5_visual">
+      <origin xyz="2.2237231434019124e-09 -0.08820000477588473 2.841631274730361e-10" rpy="-1.1084439540778281e-15 -8.665525745064211e-18 1.117026270222134e-15" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="ur_light" />
+    </visual>
+    <collision name="Arm-5_collision">
+      <origin xyz="2.2237231434019124e-09 -0.08820000477588473 2.841631274730361e-10" rpy="-1.1084439540778281e-15 -8.665525745064211e-18 1.117026270222134e-15" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="End-Coupler-v1">
+    <inertial>
+      <origin xyz="-0.003390537594555969 -4.775884789864904e-09 2.841748064641436e-10" rpy="0.0 -0.0 0.0" />
+      <mass value="0.1162770105689689" />
+      <inertia ixx="4.070444495868353e-05" iyy="2.169606026503892e-05" izz="2.1696060266696016e-05" ixy="-1.734723475976807e-18" iyz="2.0328790734103208e-20" ixz="-2.591920818598159e-19" />
+    </inertial>
+    <visual name="End-Coupler-v1_visual">
+      <origin xyz="-0.00919999777627698 -4.775884789864904e-09 2.8416296760092055e-10" rpy="-1.1084439540778271e-15 -8.665525745064204e-18 1.117026270222134e-15" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="ur_accent" />
+    </visual>
+    <collision name="End-Coupler-v1_collision">
+      <origin xyz="-0.00919999777627698 -4.775884789864904e-09 2.8416296760092055e-10" rpy="-1.1084439540778271e-15 -8.665525745064204e-18 1.117026270222134e-15" />
+      <geometry>
+        <mesh filename="file://$(find arm_description)/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="Base_Revolute-1" type="revolute">
+    <origin xyz="0.00065556 0.0 0.08255024" rpy="0.0 0.0 0.0" />
+    <parent link="Base" />
+    <child link="Arm-1" />
+    <axis xyz="0.0 0.0 1.0" />
+    <limit lower="-2.879793" upper="2.879793" effort="1000000" velocity="1000000" />
+  </joint>
+  <joint name="Arm-1_Revolute-2" type="revolute">
+    <origin xyz="3.3306690738754695e-18 0.0417 0.049749999999999996" rpy="-1.5707963267948966 -2.775557561562912e-17 -1.5707963267948966" />
+    <parent link="Arm-1" />
+    <child link="Arm-2" />
+    <axis xyz="1.0 8.531573731886488e-33 0.0" />
+    <limit lower="-2.181662" upper="2.181662" effort="1000000" velocity="1000000" />
+  </joint>
+  <joint name="Arm-2_Revolute-3" type="revolute">
+    <origin xyz="0.0029999999999999983 -0.133 0.0" rpy="1.9668971100548318e-31 -1.5707963267948966 0" />
+    <parent link="Arm-2" />
+    <child link="Arm-3" />
+    <axis xyz="0.0 0.0 -1.0" />
+    <limit lower="-2.443461" upper="2.443461" effort="1000000" velocity="1000000" />
+  </joint>
+  <joint name="Arm-3_Revolute-4" type="revolute">
+    <origin xyz="0.0 -0.11599999999999998 -0.0030000000000000027" rpy="-1.9721522630525295e-31 -1.232595164407831e-32 1.4530830046144773e-33" />
+    <parent link="Arm-3" />
+    <child link="Arm-4" />
+    <axis xyz="1.232595164407831e-32 -1.9721522630525295e-31 1.0" />
+    <limit lower="-2.443461" upper="2.443461" effort="1000000" velocity="1000000" />
+  </joint>
+  <joint name="Arm-4_Revolute-5" type="revolute">
+    <origin xyz="0.0 -0.0368 0.04880000000000001" rpy="-3.141592653589793 1.5707963267948966 0" />
+    <parent link="Arm-4" />
+    <child link="Arm-5" />
+    <axis xyz="0.0 1.0 0.0" />
+    <limit lower="-2.443461" upper="2.443461" effort="1000000" velocity="1000000" />
+  </joint>
+  <joint name="Arm-5_Revolute-6" type="revolute">
+    <origin xyz="-0.04 0.048800000000000024 0.0" rpy="5.806664411703718e-66 -5.998855812705412e-34 9.67961990252435e-33" />
+    <parent link="Arm-5" />
+    <child link="End-Coupler-v1" />
+    <axis xyz="-1.0 -9.679619902524347e-33 -0.0" />
+    <limit lower="-3.054326" upper="3.054326" effort="1000000" velocity="1000000" />
+  </joint>
+  <ros2_control name="KikobotSystem" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    <joint name="Base_Revolute-1">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
     </joint>
-    <joint name="Arm-1_Revolute-2" type="revolute">
-        <origin xyz="3.3306690738754695e-18 0.0417 0.049749999999999996" rpy="-1.5707963267948966 -2.775557561562912e-17 -1.5707963267948966" />
-        <parent link="Arm-1" />
-        <child link="Arm-2" />
-        <axis xyz="1.0 8.531573731886488e-33 0.0" />
-        <limit lower="-2.181662" upper="2.181662" effort="1000000" velocity="1000000" />
+    <joint name="Arm-1_Revolute-2">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
     </joint>
-    <joint name="Arm-2_Revolute-3" type="revolute">
-        <origin xyz="0.0029999999999999983 -0.133 0.0" rpy="1.9668971100548318e-31 -1.5707963267948966 0" />
-        <parent link="Arm-2" />
-        <child link="Arm-3" />
-        <axis xyz="0.0 0.0 -1.0" />
-        <limit lower="-2.443461" upper="2.443461" effort="1000000" velocity="1000000" />
+    <joint name="Arm-2_Revolute-3">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
     </joint>
-    <joint name="Arm-3_Revolute-4" type="revolute">
-        <origin xyz="0.0 -0.11599999999999998 -0.0030000000000000027" rpy="-1.9721522630525295e-31 -1.232595164407831e-32 1.4530830046144773e-33" />
-        <parent link="Arm-3" />
-        <child link="Arm-4" />
-        <axis xyz="1.232595164407831e-32 -1.9721522630525295e-31 1.0" />
-        <limit lower="-2.443461" upper="2.443461" effort="1000000" velocity="1000000" />
+    <joint name="Arm-3_Revolute-4">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
     </joint>
-    <joint name="Arm-4_Revolute-5" type="revolute">
-        <origin xyz="0.0 -0.0368 0.04880000000000001" rpy="-3.141592653589793 1.5707963267948966 0" />
-        <parent link="Arm-4" />
-        <child link="Arm-5" />
-        <axis xyz="0.0 1.0 0.0" />
-        <limit lower="-2.443461" upper="2.443461" effort="1000000" velocity="1000000" />
+    <joint name="Arm-4_Revolute-5">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
     </joint>
-    <joint name="Arm-5_Revolute-6" type="revolute">
-        <origin xyz="-0.04 0.048800000000000024 0.0" rpy="5.806664411703718e-66 -5.998855812705412e-34 9.67961990252435e-33" />
-        <parent link="Arm-5" />
-        <child link="End-Coupler-v1" />
-        <axis xyz="-1.0 -9.679619902524347e-33 -0.0" />
-        <limit lower="-3.054326" upper="3.054326" effort="1000000" velocity="1000000" />
- </joint>
- <ros2_control name="KikobotSystem" type="system">
-  <hardware>
-   <plugin>gz_ros2_control/GazeboSimSystem</plugin>
-  </hardware>
-  <joint name="Base_Revolute-1">
-   <command_interface name="position" />
-   <state_interface name="position" />
-   <state_interface name="velocity" />
-   <state_interface name="effort" />
-  </joint>
-  <joint name="Arm-1_Revolute-2">
-   <command_interface name="position" />
-   <state_interface name="position" />
-   <state_interface name="velocity" />
-   <state_interface name="effort" />
-  </joint>
-  <joint name="Arm-2_Revolute-3">
-   <command_interface name="position" />
-   <state_interface name="position" />
-   <state_interface name="velocity" />
-   <state_interface name="effort" />
-  </joint>
-  <joint name="Arm-3_Revolute-4">
-   <command_interface name="position" />
-   <state_interface name="position" />
-   <state_interface name="velocity" />
-   <state_interface name="effort" />
-  </joint>
-  <joint name="Arm-4_Revolute-5">
-   <command_interface name="position" />
-   <state_interface name="position" />
-   <state_interface name="velocity" />
-   <state_interface name="effort" />
-  </joint>
-  <joint name="Arm-5_Revolute-6">
-   <command_interface name="position" />
-   <state_interface name="position" />
-   <state_interface name="velocity" />
-   <state_interface name="effort" />
-  </joint>
- </ros2_control>
- <gazebo>
-  <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-   <parameters>$(find arm_controller)/config/arm_controllers.yaml</parameters>
-  </plugin>
- </gazebo>
-  <!-- Keep the arm from toppling by disabling gravity on the Base link only -->
+    <joint name="Arm-5_Revolute-6">
+      <command_interface name="position" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+    </joint>
+  </ros2_control>
+  <gazebo>
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find arm_controller)/config/arm_controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
   <gazebo reference="Base">
     <gravity>false</gravity>
     <kinematic>true</kinematic>
