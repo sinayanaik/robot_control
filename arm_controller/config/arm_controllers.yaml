@@ -1,0 +1,15 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 1000
+    use_sim_time: true
+
+    arm_controller:
+      type: position_controllers/JointGroupPositionController
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+arm_controller:
+  ros__parameters:
+    joints: [Base_Revolute-1, Arm-1_Revolute-2, Arm-2_Revolute-3, Arm-3_Revolute-4, Arm-4_Revolute-5, Arm-5_Revolute-6]
+    command_interfaces: [position]
+    state_interfaces: [position, velocity, effort]

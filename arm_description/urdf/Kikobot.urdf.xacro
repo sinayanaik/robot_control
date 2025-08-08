@@ -1,4 +1,22 @@
-<robot name="Kikobot">
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="Kikobot">
+  <link name="world"/>
+  <link name="base_link"/>
+  <joint name="world_to_base_link" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <!-- Root link has no inertia; keep URDF valid for TF without referencing 'world' -->
+  <joint name="base_link_to_Base" type="fixed">
+    <parent link="base_link"/>
+    <child link="Base"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Include the original URDF content -->
+  <!-- Begin inlined URDF -->
+
 
     <link name="Base">
         <inertial>
@@ -9,13 +27,13 @@
         <visual name="Base_visual">
             <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 0.0" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Base_collision">
             <origin xyz="0.0 0.0 0.0" rpy="1.5707963267948966 0.0 0.0" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Base.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -28,13 +46,13 @@
         <visual name="Arm-1_visual">
             <origin xyz="-2.8416335229319856e-10 -2.2237225545673756e-09 -0.08525000477588429" rpy="1.5707963267948957 -3.633789175993528e-17 -1.5707963267948968" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-1_collision">
             <origin xyz="-2.8416335229319856e-10 -2.2237225545673756e-09 -0.08525000477588429" rpy="1.5707963267948957 -3.633789175993528e-17 -1.5707963267948968" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -47,13 +65,13 @@
         <visual name="Arm-2_visual">
             <origin xyz="0.006000002223722634 4.77588471881063e-09 -2.841633539585331e-10" rpy="-3.141592653589793 1.5707963267948957 0" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-2_collision">
             <origin xyz="0.006000002223722634 4.77588471881063e-09 -2.841633539585331e-10" rpy="-3.141592653589793 1.5707963267948957 0" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-2.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -66,13 +84,13 @@
         <visual name="Arm-3_visual">
             <origin xyz="-2.8416321629087804e-10 4.77588471881063e-09 -2.22372277924876e-09" rpy="-3.1415926535897913 9.940834058912084e-17 1.1696762940351957e-15" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-3_collision">
             <origin xyz="-2.8416321629087804e-10 4.77588471881063e-09 -2.22372277924876e-09" rpy="-3.1415926535897913 9.940834058912084e-17 1.1696762940351957e-15" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-3.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -85,13 +103,13 @@
         <visual name="Arm-4_visual">
             <origin xyz="-2.841630741823309e-10 4.77588471881063e-09 -0.08820000222372298" rpy="1.5707963267948968 8.582316144306066e-18 1.5707963267948977" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-4_collision">
             <origin xyz="-2.841630741823309e-10 4.77588471881063e-09 -0.08820000222372298" rpy="1.5707963267948968 8.582316144306066e-18 1.5707963267948977" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-4.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -104,13 +122,13 @@
         <visual name="Arm-5_visual">
             <origin xyz="2.2237231434019124e-09 -0.08820000477588473 2.841631274730361e-10" rpy="-1.1084439540778281e-15 -8.665525745064211e-18 1.117026270222134e-15" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="Arm-5_collision">
             <origin xyz="2.2237231434019124e-09 -0.08820000477588473 2.841631274730361e-10" rpy="-1.1084439540778281e-15 -8.665525745064211e-18 1.117026270222134e-15" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/Arm-5.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -123,13 +141,13 @@
         <visual name="End-Coupler-v1_visual">
             <origin xyz="-0.00919999777627698 -4.775884789864904e-09 2.8416296760092055e-10" rpy="-1.1084439540778271e-15 -8.665525745064204e-18 1.117026270222134e-15" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </visual>
         <collision name="End-Coupler-v1_collision">
             <origin xyz="-0.00919999777627698 -4.775884789864904e-09 2.8416296760092055e-10" rpy="-1.1084439540778271e-15 -8.665525745064204e-18 1.117026270222134e-15" />
             <geometry>
-                <mesh filename="package://arm_description/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
+                <mesh filename="$(find arm_description)/urdf/meshes/End-Coupler-v1.stl" scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
@@ -174,5 +192,56 @@
         <child link="End-Coupler-v1" />
         <axis xyz="-1.0 -9.679619902524347e-33 -0.0" />
         <limit lower="-3.054326" upper="3.054326" effort="1000000" velocity="1000000" />
-    </joint>
-<ros2_control name="KikobotSystem" type="system"><hardware><plugin>gz_ros2_control/GazeboSimSystem</plugin></hardware><joint name="Base_Revolute-1"><command_interface name="position" /><state_interface name="position" /><state_interface name="velocity" /><state_interface name="effort" /></joint><joint name="Arm-1_Revolute-2"><command_interface name="position" /><state_interface name="position" /><state_interface name="velocity" /><state_interface name="effort" /></joint><joint name="Arm-2_Revolute-3"><command_interface name="position" /><state_interface name="position" /><state_interface name="velocity" /><state_interface name="effort" /></joint><joint name="Arm-3_Revolute-4"><command_interface name="position" /><state_interface name="position" /><state_interface name="velocity" /><state_interface name="effort" /></joint><joint name="Arm-4_Revolute-5"><command_interface name="position" /><state_interface name="position" /><state_interface name="velocity" /><state_interface name="effort" /></joint><joint name="Arm-5_Revolute-6"><command_interface name="position" /><state_interface name="position" /><state_interface name="velocity" /><state_interface name="effort" /></joint></ros2_control><gazebo><plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin"><parameters>package://arm_controller/config/arm_controllers.yaml</parameters></plugin></gazebo></robot>
+ </joint>
+ <ros2_control name="KikobotSystem" type="system">
+  <hardware>
+   <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+  </hardware>
+  <joint name="Base_Revolute-1">
+   <command_interface name="position" />
+   <state_interface name="position" />
+   <state_interface name="velocity" />
+   <state_interface name="effort" />
+  </joint>
+  <joint name="Arm-1_Revolute-2">
+   <command_interface name="position" />
+   <state_interface name="position" />
+   <state_interface name="velocity" />
+   <state_interface name="effort" />
+  </joint>
+  <joint name="Arm-2_Revolute-3">
+   <command_interface name="position" />
+   <state_interface name="position" />
+   <state_interface name="velocity" />
+   <state_interface name="effort" />
+  </joint>
+  <joint name="Arm-3_Revolute-4">
+   <command_interface name="position" />
+   <state_interface name="position" />
+   <state_interface name="velocity" />
+   <state_interface name="effort" />
+  </joint>
+  <joint name="Arm-4_Revolute-5">
+   <command_interface name="position" />
+   <state_interface name="position" />
+   <state_interface name="velocity" />
+   <state_interface name="effort" />
+  </joint>
+  <joint name="Arm-5_Revolute-6">
+   <command_interface name="position" />
+   <state_interface name="position" />
+   <state_interface name="velocity" />
+   <state_interface name="effort" />
+  </joint>
+ </ros2_control>
+ <gazebo>
+  <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+   <parameters>$(find arm_controller)/config/arm_controllers.yaml</parameters>
+  </plugin>
+ </gazebo>
+  <!-- Keep the arm from toppling by disabling gravity on the Base link only -->
+  <gazebo reference="Base">
+    <gravity>false</gravity>
+    <kinematic>true</kinematic>
+  </gazebo>
+</robot>
