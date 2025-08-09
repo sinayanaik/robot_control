@@ -1,35 +1,30 @@
-## Kikobot ROS 2 Control + Gazebo (+ RViz, MoveIt) – End‑to‑End Guide
+## Kikobot: From-Scratch Guide (ROS 2 + ros2_control + Gazebo + RViz + Motion)
 
-This guide documents how the workspace is wired to simulate Kikobot with ros2_control in Gazebo (ros_gz), visualize in RViz, and prepare for MoveIt integration. It is written to be reusable for other robots; adapt joint names, file paths, and masses as needed.
+This is a complete setup/run manual for this workspace. It starts from a clean machine and covers: URDF/Xacro, ros2_control, Gazebo, RViz, controller setup, and starting motion commands.
 
-### Table of contents
-- Concepts overview
-- Install prerequisites
-- Workspace layout and packages
-- Modeling the robot (URDF/Xacro): links, joints, visuals, collisions, inertias
-- ros2_control: hardware, interfaces, controllers
-- Gazebo integration (ros_gz + gz_ros2_control)
-- Launching everything (single orchestrator launch)
-- Controller YAML
-- Build and run
-- Troubleshooting (real issues and fixes we hit)
-- MoveIt integration (how to add, recommended controller)
-- Adapting this template to another robot
+### TL;DR (quick start)
+```bash
+cd /home/san/Public/kikobot_control
+source /opt/ros/$ROS_DISTRO/setup.bash
+colcon build
+source install/setup.bash
 
----
+# Terminal 1: launch Gazebo + RViz + controllers
+ros2 launch arm_description arm_launch.py
 
-### Concepts overview
-- **Command interface**: values you send to hardware (e.g., position).
-- **State interface**: values you read from hardware (position/velocity/effort).
-- **Resource manager**: loads hardware from the `<ros2_control>` tag and exposes joint interfaces.
-- **Controller manager**: loads controllers and connects them to the resource manager.
-- **ros2_control**: framework for hardware + controllers.
-- **ros2_controllers**: ready controllers (joint state broadcaster, position group, trajectory, etc.).
-- **gz_ros2_control**: Gazebo system plugin that provides a ros2_control hardware in simulation.
+# Terminal 2: start sinusoid motion
+source /opt/ros/$ROS_DISTRO/setup.bash && source /home/san/Public/kikobot_control/install/setup.bash
+ros2 run arm_motion motion_node.py
+```
+
+You should see in Terminal 1 logs similar to the user run (Gazebo GUI, controller spawns, etc.). In Terminal 2 you should see:
+```
+[INFO] [...] [joint_position_publisher]: arm_motion: sinusoid command node started
+```
 
 ---
 
-### Install prerequisites (Ubuntu + ROS 2 Jazzy)
+### 1) Prerequisites (Ubuntu, ROS 2 Jazzy)
 ```bash
 sudo apt update
 sudo apt install ros-$ROS_DISTRO-desktop-full
@@ -41,101 +36,83 @@ sudo apt install \
   ros-$ROS_DISTRO-joint-trajectory-controller \
   ros-$ROS_DISTRO-robot-state-publisher ros-$ROS_DISTRO-joint-state-publisher-gui \
   ros-$ROS_DISTRO-xacro
+
+# Optional (for motion node CSV/plots and to silence pandas warning):
+sudo apt install python3-pandas python3-matplotlib python3-numpy python3-bottleneck
 ```
 
-Optional plotting libs: `python3-pandas python3-matplotlib python3-numpy`.
-
-Avoid Conda when building ROS workspaces or ensure its Python has `catkin_pkg rospkg empy` installed.
+Notes:
+- If you use Conda, ensure `catkin_pkg rospkg empy` are available to the Python used by CMake/ament, or avoid Conda when building.
+- Pandas may warn about Bottleneck version. Install `python3-bottleneck` as above.
 
 ---
 
-### Workspace layout and packages
+### 2) Workspace layout
 ```
 kikobot_control/
   src/
     arm_description/        # Robot model, URDF/Xacro, RViz config, launches
     arm_controller/         # Controllers YAML and spawner launch
+    arm_motion/             # Motion node + launch
 ```
 
-- `arm_description` is an ament_cmake package that installs `urdf/`, `rviz/`, `launch/`.
-- `arm_controller` installs `config/arm_controllers.yaml` and `launch/controllers.launch.py`.
+Build:
+```bash
+cd /home/san/Public/kikobot_control
+source /opt/ros/$ROS_DISTRO/setup.bash
+colcon build && source install/setup.bash
+```
 
 ---
 
-### Modeling the robot (URDF/Xacro)
+### 3) Robot URDF/Xacro (modeling and interfaces)
 
-Key file: `arm_description/urdf/Kikobot.urdf.xacro` (xacro is expanded at launch time so paths and params resolve correctly for both RViz and Gazebo).
+Key file: `arm_description/urdf/Kikobot.urdf.xacro`. It defines:
+- Root frames and fixed joints (`world` → `base_link` → `Base`).
+- Visual + collision meshes using share-resolved paths so both RViz and Gazebo load them.
+- The ros2_control hardware and joint interfaces.
+- The Gazebo `gz_ros2_control` plugin pointing to the controller YAML.
 
-Highlights you should adapt for a new robot:
-- Stable link names and joint names. Example used here: `Base`, `Arm-1` … `Arm-5`, `End-Coupler-v1` and joints `Base_Revolute-1` … `Arm-5_Revolute-6`.
-- Provide both visual and collision geometry; set non‑zero masses and reasonable inertias.
-- Mesh paths that work in both RViz and Gazebo:
-  - Use `file://$(find arm_description)/urdf/meshes/<file>.stl` in xacro (RViz can load these; Gazebo also resolves them after xacro expansion).
-
-Root and base fixing (prevents toppling and removes KDL warning):
+Root and base links:
 ```xml
-<link name="world"/>
-<link name="base_link"/>
+<link name="world" />
+<link name="base_link" />
 <joint name="world_to_base_link" type="fixed">
-  <parent link="world"/>
-  <child link="base_link"/>
-  <origin xyz="0 0 0" rpy="0 0 0"/>
-</joint>
-
+  <parent link="world" />
+  <child link="base_link" />
+  <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
 <joint name="base_link_to_Base" type="fixed">
-  <parent link="base_link"/>
-  <child link="Base"/>
-  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <parent link="base_link" />
+  <child link="Base" />
+  <origin xyz="0 0 0" rpy="0 0 0" />
 </joint>
 ```
 
-Tip: If the robot intersects the ground, raise it by changing `world_to_base_link` origin, e.g. `xyz="0 0 0.05"`.
-
-Optional: For extra stability you can add Gazebo tags to the base link:
+Example mesh usage (xacro-friendly):
 ```xml
-<gazebo reference="Base">
-  <gravity>false</gravity>
-  <kinematic>true</kinematic>
-</gazebo>
+<geometry>
+  <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001" />
+</geometry>
 ```
 
-Meshes example (xacro‑friendly):
-```xml
-<visual>
-  <origin xyz="0 0 0" rpy="0 0 0"/>
-  <geometry>
-    <mesh filename="file://$(find arm_description)/urdf/meshes/Arm-1.stl" scale="0.001 0.001 0.001"/>
-  </geometry>
-</visual>
-```
-
----
-
-### ros2_control block (hardware + interfaces)
-
-Declare the simulation hardware and joint interfaces in the same xacro:
+ros2_control hardware and per-joint interfaces:
 ```xml
 <ros2_control name="KikobotSystem" type="system">
   <hardware>
     <plugin>gz_ros2_control/GazeboSimSystem</plugin>
   </hardware>
   <joint name="Base_Revolute-1">
-    <command_interface name="position"/>
-    <state_interface name="position"/>
-    <state_interface name="velocity"/>
-    <state_interface name="effort"/>
+    <command_interface name="position" />
+    <state_interface name="position" />
+    <state_interface name="velocity" />
+    <state_interface name="effort" />
   </joint>
-  <!-- repeat for each actuated joint -->
+  <!-- repeat for all 6 actuated joints -->
 </ros2_control>
 ```
 
-This exposes position commands and position/velocity/effort states per joint in simulation.
-
----
-
-### Gazebo integration (ros_gz + gz_ros2_control)
-
-Load the system plugin and point it to your controllers YAML:
+Gazebo plugin wiring ros2_control to the controller manager with our YAML:
 ```xml
 <gazebo>
   <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
@@ -144,13 +121,19 @@ Load the system plugin and point it to your controllers YAML:
 </gazebo>
 ```
 
-The plugin creates the controller manager inside Gazebo and wires to the resource manager generated from `<ros2_control>`.
+Tip: If the robot intersects ground, raise `world_to_base_link` origin, e.g. `xyz="0 0 0.05"`. For a fixed base, you can set the base link non-dynamic in Gazebo:
+```xml
+<gazebo reference="Base">
+  <gravity>false</gravity>
+  <kinematic>true</kinematic>
+</gazebo>
+```
 
 ---
 
-### Controller YAML (`arm_controller/config/arm_controllers.yaml`)
+### 4) ros2_control controllers (YAML)
 
-Used here (position group controller for quick tests):
+File: `arm_controller/config/arm_controllers.yaml` (full):
 ```yaml
 controller_manager:
   ros__parameters:
@@ -169,87 +152,208 @@ arm_controller:
     state_interfaces: [position, velocity, effort]
 ```
 
-For MoveIt use `joint_trajectory_controller/JointTrajectoryController` instead (see MoveIt section).
+This exposes `/arm_controller/commands` (Float64MultiArray of 6 positions) and publishes `/joint_states` via the broadcaster.
 
 ---
 
-### Launching everything (single file)
+### 5) Launch orchestration (Gazebo + RViz + controllers)
 
-`arm_description/launch/arm_launch.py` orchestrates Gazebo, robot state publisher, entity spawn, `/clock` bridge, controller spawners, and RViz.
-
-Nodes started and responsibilities:
-- `ros_gz_sim/gz_sim.launch.py`: brings up Gazebo (empty world).
-- `robot_state_publisher`: publishes TF from `robot_description` (expanded via xacro).
-- `ros_gz_sim/create`: spawns the robot entity from `robot_description`.
-- `ros_gz_bridge/parameter_bridge`: bridges Gazebo `/clock` → ROS `/clock`.
-- `controller_manager/spawner joint_state_broadcaster`: starts the broadcaster.
-- `controller_manager/spawner arm_controller`: starts the arm controller after JSB becomes active.
-- `rviz2`: opens the RViz view.
-
-Snippet (key parts):
+File: `arm_description/launch/arm_launch.py` (full):
 ```python
-robot_description = ParameterValue(Command(['xacro ', LaunchConfiguration('model'), ' is_ignition:=False']), value_type=str)
+import os
+from pathlib import Path
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, SetEnvironmentVariable
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import Command, LaunchConfiguration
+from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
+from launch.event_handlers import OnProcessExit
 
-gz_spawn_entity = Node(
-  package='ros_gz_sim', executable='create', arguments=['-topic', 'robot_description', '-name', 'kikobot']
-)
 
-gz_ros2_bridge = Node(
-  package='ros_gz_bridge', executable='parameter_bridge', arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock']
-)
+def generate_launch_description():
+    pkg_share = get_package_share_directory('arm_description')
+    model_default = os.path.join(pkg_share, 'urdf', 'Kikobot.urdf.xacro')
+    rviz_default = os.path.join(pkg_share, 'rviz', 'config.rviz')
+
+    model_arg = DeclareLaunchArgument(
+        name='model',
+        default_value=model_default,
+        description='Absolute path to robot xacro file',
+    )
+    rviz_config_arg = DeclareLaunchArgument(
+        name='rviz_config',
+        default_value=rviz_default,
+        description='Absolute path to rviz config file',
+    )
+
+    # Make Gazebo able to resolve package resources
+    gazebo_resource_path = SetEnvironmentVariable(
+        name='GZ_SIM_RESOURCE_PATH',
+        value=[str(Path(pkg_share).parent.resolve())],
+    )
+
+    robot_description = ParameterValue(
+        Command(['xacro ', LaunchConfiguration('model'), ' is_ignition:=False']),
+        value_type=str,
+    )
+
+    robot_state_publisher_node = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        parameters=[{'robot_description': robot_description, 'use_sim_time': True}],
+        output='screen',
+    )
+
+    gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            os.path.join(get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')
+        ]),
+        launch_arguments={'gz_args': '-v 3 -r empty.sdf'}.items(),
+    )
+
+    gz_spawn_entity = Node(
+        package='ros_gz_sim',
+        executable='create',
+        output='screen',
+        arguments=['-topic', 'robot_description', '-name', 'kikobot'],
+    )
+
+    # Bridge Gazebo clock to ROS to eliminate controller_manager warnings
+    gz_ros2_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
+        output='screen',
+    )
+
+    # Controllers
+    controllers_yaml = os.path.join(
+        get_package_share_directory('arm_controller'), 'config', 'arm_controllers.yaml'
+    )
+
+    joint_state_broadcaster_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+        parameters=[controllers_yaml],
+        output='screen',
+    )
+
+    arm_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['arm_controller', '--controller-manager', '/controller_manager'],
+        parameters=[controllers_yaml],
+        output='screen',
+    )
+
+    # Spawn controllers only after the entity is inserted, and chain spawns
+    spawn_jsb_after_entity = RegisterEventHandler(
+        OnProcessExit(target_action=gz_spawn_entity, on_exit=[joint_state_broadcaster_spawner])
+    )
+    spawn_arm_after_jsb = RegisterEventHandler(
+        OnProcessExit(target_action=joint_state_broadcaster_spawner, on_exit=[arm_controller_spawner])
+    )
+
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', LaunchConfiguration('rviz_config')],
+        output='screen',
+    )
+
+    return LaunchDescription([
+        model_arg,
+        rviz_config_arg,
+        gazebo_resource_path,
+        gazebo,
+        robot_state_publisher_node,
+        gz_spawn_entity,
+        gz_ros2_bridge,
+        spawn_jsb_after_entity,
+        spawn_arm_after_jsb,
+        rviz_node,
+    ])
 ```
 
-We also set `GZ_SIM_RESOURCE_PATH` to the parent of the description share directory so Gazebo can resolve resources.
+This launch sets `GZ_SIM_RESOURCE_PATH` automatically so Gazebo can resolve package assets, spawns the robot from `robot_description`, bridges the `/clock`, then spawns `joint_state_broadcaster` and `arm_controller`, and finally opens RViz.
 
 ---
 
-### Build and run
+### 6) Run the simulation
+
+Terminal 1:
 ```bash
-cd /home/san/Public/kikobot_control
-source /opt/ros/$ROS_DISTRO/setup.bash   # system ROS
-colcon build
-source install/setup.bash
-
-# One command to launch Gazebo, RViz, controllers, and spawn the robot
+source /opt/ros/$ROS_DISTRO/setup.bash
+cd /home/san/Public/kikobot_control && source install/setup.bash
 ros2 launch arm_description arm_launch.py
+```
 
-# Drive the arm (position group controller expects Float64MultiArray)
-ros2 topic pub /arm_controller/commands std_msgs/msg/Float64MultiArray "{data: [0.0, 0.3, -0.3, 0.2, 0.0, 0.0]}"
+Expect logs similar to:
+- Gazebo GUI loading, world `empty.sdf`.
+- ros2_control hardware `KikobotSystem` initialized.
+- Controllers loaded and activated: `joint_state_broadcaster`, `arm_controller`.
 
-# Inspect
+Verify:
+```bash
 ros2 control list_controllers
-ros2 topic list | grep arm_controller
+ros2 topic list | grep -E 'joint_states|arm_controller'
+```
+
+Publish a manual pose (6 values in order of controller YAML):
+```bash
+ros2 topic pub /arm_controller/commands std_msgs/msg/Float64MultiArray "{data: [0.0, 0.3, -0.3, 0.2, 0.0, 0.0]}"
 ```
 
 ---
 
-### Troubleshooting (issues we actually hit and fixes)
+### 7) Start motion (sinusoid command node)
 
-- "No module named catkin_pkg" during build:
-  - Cause: Conda Python used by CMake/ament.
-  - Fix: deactivate Conda; or `pip install catkin_pkg rospkg empy` in that env; clean `build/ install/ log/` and rebuild.
+Terminal 2:
+```bash
+source /opt/ros/$ROS_DISTRO/setup.bash && source /home/san/Public/kikobot_control/install/setup.bash
+ros2 run arm_motion motion_node.py
+```
 
-- Gazebo crashed when plugin tried to load YAML via `package://...`:
-  - Fix: expand xacro and use `$(find arm_controller)/config/arm_controllers.yaml` so an absolute path reaches the plugin.
+What it does:
+- Publishes continuous sinusoidal joint positions to `/arm_controller/commands`.
+- Subscribes to `/joint_states` and visualizes the end-effector trail in RViz as a `MarkerArray`.
+- On Ctrl+C, if `pandas/numpy/matplotlib` are installed, writes a CSV under `test_datas/` with timestamps, desired/actual positions, velocities, efforts, and EE positions.
 
-- Robot didn’t appear; frame errors like parent `Base` not found, or PoseRelativeToGraph:
-  - Cause: missing/invalid root setup or zero-mass root.
-  - Fix: root is `world` → `base_link` (fixed), then `base_link` → `Base` (fixed). Give `Base` non‑zero mass/inertia.
+Optional: there is also a tiny launch file to start the node:
+```python
+# File: src/arm_motion/launch/motion.launch.py
+from launch import LaunchDescription
+from launch_ros.actions import Node
 
-- RViz couldn’t load meshes from installed share path:
-  - Fix: use `file://$(find arm_description)/...` in xacro for mesh filenames.
-
-- Controller manager warnings "No clock received":
-  - Fix: bridge Gazebo clock `/clock` using `ros_gz_bridge/parameter_bridge`.
+def generate_launch_description():
+    return LaunchDescription([
+        Node(
+            package='arm_motion', executable='motion_node.py', output='screen'
+        )
+    ])
+```
+Run it as:
+```bash
+ros2 launch arm_motion motion.launch.py
+```
 
 ---
 
-### MoveIt integration (recommended setup)
+### 8) Common warnings and fixes
 
-1) Generate a MoveIt config via the MoveIt Setup Assistant, pointing to your main xacro (`Kikobot.urdf.xacro`).
-2) In the MoveIt config package:
-   - Use `joint_trajectory_controller/JointTrajectoryController` for each joint group.
-   - Provide `ros2_controllers.yaml` like:
+- libEGL warning: "egl: failed to create dri2 screen" — occurs on some systems; usually harmless for Gazebo GUI if it still renders. If headless, run without GUI or use virtual GL.
+- Controller manager "No clock received" — the launch bridges `/clock` via `ros_gz_bridge`; ensure that node is running.
+- Pandas Bottleneck warning — install `python3-bottleneck` as shown above.
+
+---
+
+### 9) Switching to trajectory control (for MoveIt)
+
+Replace the controller in the YAML with `joint_trajectory_controller/JointTrajectoryController` and keep joint lists consistent. Example snippet:
 ```yaml
 controller_manager:
   ros__parameters:
@@ -266,51 +370,37 @@ arm_controller:
     state_interfaces: [position]
     allow_partial_joints_goal: true
 ```
-3) Ensure MoveIt planning groups match the controller joint lists.
-4) When using MoveIt, swap the controller type in your sim YAML to trajectory controller to keep consistency.
 
 ---
 
-### Dependencies to declare
+### 10) Package dependencies (sanity checklist)
 
-- `arm_description/package.xml` should include:
-  - `gz_ros2_control`, `ros2launch`, `robot_state_publisher`, `xacro`, `controller_manager`, `joint_state_publisher_gui`, `rviz2`, `ros_gz_sim` (exec_depends).
-
-- `arm_controller/package.xml` should include:
-  - `gz_ros2_control`, `controller_manager`, `position_controllers`, `joint_state_broadcaster` (or `joint_trajectory_controller`).
+- `arm_description/package.xml`: `urdf`, `xacro`, `robot_state_publisher`, `joint_state_publisher_gui`, `rviz2`, `ros2launch`, `gz_ros2_control`, `controller_manager`, `ros_gz_sim`.
+- `arm_controller/package.xml`: `gz_ros2_control`, `controller_manager`, `position_controllers`, `joint_state_broadcaster` (or `joint_trajectory_controller`).
 
 ---
 
-### Adapting this template to another robot
-- Keep joint names consistent across URDF, controllers YAML, and (optionally) MoveIt.
-- Provide valid masses/inertias; add damping to joints for stability.
-- Use `file://$(find <pkg>)/...` for meshes in xacro so both RViz and Gazebo load them.
-- Root pattern that works well: `world` → `base_link` (fixed) → `<your real base link>` (fixed).
-- In simulation, use `gz_ros2_control` plugin and declare interfaces in the `<ros2_control>` tag.
-- Start `ros_gz_bridge` clock bridge to remove timing warnings.
+### 11) Files of interest
+- `arm_description/urdf/Kikobot.urdf.xacro` — full robot model, `<ros2_control>`, Gazebo plugin, mesh paths.
+- `arm_controller/config/arm_controllers.yaml` — controller manager and controllers.
+- `arm_description/launch/arm_launch.py` — launches Gazebo, robot, controllers, RViz.
+- `arm_motion/src/motion_node.py` — sinusoidal position driver with RViz markers and optional CSV output.
 
 ---
 
-### Files of interest (this repo)
-- `arm_description/urdf/Kikobot.urdf.xacro`: full robot model, `<ros2_control>`, Gazebo plugin, mesh paths.
-- `arm_controller/config/arm_controllers.yaml`: controller manager and controllers.
-- `arm_description/launch/arm_launch.py`: single entrypoint launching Gazebo, robot, controllers, RViz.
-
----
-
-### Verifying the system
+### 12) Useful ROS 2 commands
 ```bash
+# Controllers
 ros2 control list_controllers
-ros2 topic list | grep -E 'joint_states|arm_controller'
-ros2 topic pub /arm_controller/commands std_msgs/msg/Float64MultiArray "{data: [0.0, 0.3, -0.3, 0.2, 0.0, 0.0]}"
+ros2 control list_hardware_interfaces
+
+# Topics
+ros2 topic list
+ros2 topic echo /joint_states
+
+# Frames/TF (RViz handles visualization)
+ros2 run tf2_tools view_frames   # if installed
 ```
 
-If controllers are already active, don’t reconfigure them; use `switch_controllers` or unload/load as needed.
-
----
-
-### Notes
-- RViz shows `/joint_states` from the `joint_state_broadcaster`.
-- Gazebo entity name is `kikobot` (see launch spawn args).
-- To lift the robot or offset pose, adjust `world_to_base_link` origin.
+If controllers are already active, use `ros2 control switch_controllers` or unload/load instead of re-configuring.
 
