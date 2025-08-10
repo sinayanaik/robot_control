@@ -48,13 +48,13 @@ Topics and services
 Launch files
 - Simulation + controllers (Gazebo, RViz, robot_state_publisher, controller spawners):
   - `ros2 launch arm_description arm_launch.py`
-- Kinematics stack (planner, executor, demo publisher, optional IK):
-  - `ros2 launch arm_kinematics kinematics.launch.py`
+- GUI + kinematics stack (IK service, planner, executor, GUI controls):
+  - `ros2 launch arm_kinematics gui_ee.launch.py`
   - This starts:
-    - `trajectory_service.py` (planner)
-    - `trajectory_executor.py` (executor)
-    - `demo_plan_publish.py` (example client that calls the service and publishes to `planned_trajectory`)
-    - `ik_service.py` (only succeeds if KDL is installed)
+    - `arm_pykdl/ik_service_cpp` — C++ Orocos KDL IK service on `/compute_ik`.
+    - `trajectory_service.py` — planner service `/plan_joint_trajectory` (quintic by default).
+    - `trajectory_executor.py` — subscribes `planned_trajectory` and publishes `/arm_controller/commands`.
+    - `gui_ee.py` — interactive end‑effector GUI (sliders + numeric entries for start/target pose) to compute IK and command motion.
 
 End‑to‑end flow
 1) Bring up the robot and controllers via `arm_launch.py`. The `controller_manager` loads and activates:
@@ -85,10 +85,26 @@ Inverse Kinematics details (optional)
 Using the package
 1) Bring up simulation:
    - `ros2 launch arm_description arm_launch.py`
-2) Start kinematics stack:
-   - `ros2 launch arm_kinematics kinematics.launch.py`
+2) Launch the GUI and kinematics stack:
+   - `ros2 launch arm_kinematics gui_ee.launch.py`
+   - In the GUI, adjust target sliders/entries, click “Compute IK” to preview joints, then “Plan + Move” to execute. Start pose fields are optional; if empty, current `/joint_states` are used.
 3) Publish your own trajectory (example):
-   - `ros2 topic pub /planned_trajectory trajectory_msgs/JointTrajectory "..."`
+    - Run:
+
+```bash
+ros2 topic pub --once /planned_trajectory trajectory_msgs/msg/JointTrajectory "joint_names:
+- Base_Revolute-1
+- Arm-1_Revolute-2
+- Arm-2_Revolute-3
+- Arm-3_Revolute-4
+- Arm-4_Revolute-5
+- Arm-5_Revolute-6
+points:
+- positions: [0, 0, 0, 0, 0, 0]
+  time_from_start: {sec: 0}
+- positions: [0.3, -0.4, 0.5, -0.3, 0.2, 0.1]
+  time_from_start: {sec: 3}"
+```
 4) Or request a planned trajectory and execute automatically (demo node does this on startup).
 
 Important assumptions and limits
@@ -111,7 +127,23 @@ File map
 - `src/trajectory_service.py` — planner node.
 - `src/trajectory_executor.py` — executor node.
 - `src/demo_plan_publish.py` — example client that demonstrates plan→execute.
-- `src/ik_service.py` — IK node (optional, KDL-based).
+- `src/ik_service.py` — Python IK sample (optional; superseded by C++ `arm_pykdl/ik_service_cpp`).
 - `launch/kinematics.launch.py` — launches planner, executor, demo, and IK.
+- `launch/gui_ee.launch.py` — launches IK (C++), planner, executor, and the GUI.
+
+Dependencies and technologies
+- ROS 2 (rclcpp/rclpy, ros2launch): Nodes, services, and launch orchestration.
+- geometry_msgs, trajectory_msgs, sensor_msgs, builtin_interfaces: Message types for pose, trajectories, joint states, and time.
+- ros2_control (via `arm_controller`): Consumes `/arm_controller/commands` to move joints.
+- Orocos KDL + kdl_parser (C++): URDF parsing to KDL tree/chain, IK via `ChainIkSolverPos_LMA` and NR fallback.
+- ament_index_cpp: Locates package share directories (URDF/xacro path fallback).
+- xacro (fallback path only): If `robot_description` param is not set, xacro expands `arm_description/urdf/arm.urdf.xacro`.
+- numpy (Python planner): Quintic time-scaling sampling for trajectories.
+- Optional Ruckig: Jerk‑limited trajectories if `python3-ruckig` is installed and enabled in `trajectory_service.py`.
+
+Runtime order
+1) Launch simulation/controllers: `ros2 launch arm_description arm_launch.py`
+2) Launch GUI + IK + planner + executor: `ros2 launch arm_kinematics gui_ee.launch.py`
+3) Use the GUI or call services/topics directly as needed.
 
 

@@ -25,6 +25,7 @@ install(
     src/ik_service.py
     src/trajectory_executor.py
     src/demo_plan_publish.py
+    src/gui_ee.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
