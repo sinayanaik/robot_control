@@ -9,7 +9,7 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     pkg_share = get_package_share_directory('arm_description')
-    xacro_path = os.path.join(pkg_share, 'urdf', 'Kikobot.urdf.xacro')
+    xacro_path = os.path.join(pkg_share, 'urdf', 'arm.urdf.xacro')
 
     robot_description = ParameterValue(Command(['xacro ', xacro_path, ' is_ignition:=False']), value_type=str)
 

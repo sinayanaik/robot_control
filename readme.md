@@ -67,7 +67,17 @@ colcon build && source install/setup.bash
 
 ### 3) Robot URDF/Xacro (modeling and interfaces)
 
-Key file: `arm_description/urdf/Kikobot.urdf.xacro`. It defines:
+Key file: `arm_description/urdf/arm.urdf.xacro`. It defines:
+Joint/link tree:
+```
+root [⚓] => /Base/
+    Base_Revolute-1 [⚙+Z] => /Arm-1/
+        Arm-1_Revolute-2 [⚙] => /Arm-2/
+            Arm-2_Revolute-3 [⚙-Z] => /Arm-3/
+                Arm-3_Revolute-4 [⚙] => /Arm-4/
+                    Arm-4_Revolute-5 [⚙+Y] => /Arm-5/
+                        Arm-5_Revolute-6 [⚙] => /End-Coupler-v1/
+```
 - Root frames and fixed joints (`world` → `base_link` → `Base`).
 - Visual + collision meshes using share-resolved paths so both RViz and Gazebo load them.
 - The ros2_control hardware and joint interfaces.
@@ -174,7 +184,7 @@ from launch.event_handlers import OnProcessExit
 
 def generate_launch_description():
     pkg_share = get_package_share_directory('arm_description')
-    model_default = os.path.join(pkg_share, 'urdf', 'Kikobot.urdf.xacro')
+    model_default = os.path.join(pkg_share, 'urdf', 'arm.urdf.xacro')
     rviz_default = os.path.join(pkg_share, 'rviz', 'config.rviz')
 
     model_arg = DeclareLaunchArgument(
@@ -381,7 +391,7 @@ arm_controller:
 ---
 
 ### 11) Files of interest
-- `arm_description/urdf/Kikobot.urdf.xacro` — full robot model, `<ros2_control>`, Gazebo plugin, mesh paths.
+- `arm_description/urdf/arm.urdf.xacro` — full robot model, `<ros2_control>`, Gazebo plugin, mesh paths.
 - `arm_controller/config/arm_controllers.yaml` — controller manager and controllers.
 - `arm_description/launch/arm_launch.py` — launches Gazebo, robot, controllers, RViz.
 - `arm_motion/src/motion_node.py` — sinusoidal position driver with RViz markers and optional CSV output.

@@ -12,7 +12,7 @@ from launch.event_handlers import OnProcessExit
 
 def generate_launch_description():
     pkg_share = get_package_share_directory('arm_description')
-    model_default = os.path.join(pkg_share, 'urdf', 'Kikobot.urdf.xacro')
+    model_default = os.path.join(pkg_share, 'urdf', 'arm.urdf.xacro')
     rviz_default = os.path.join(pkg_share, 'rviz', 'config.rviz')
 
     model_arg = DeclareLaunchArgument(

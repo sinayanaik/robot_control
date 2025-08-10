@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import os
+import subprocess
+import tempfile
 import numpy as np
 import time
 import threading
@@ -853,9 +855,23 @@ class TrajectoryPlannerGUI:
         self.root.mainloop()
         self.is_running = False
 
+def generate_urdf_from_xacro(xacro_file_path):
+    try:
+        with tempfile.NamedTemporaryFile(prefix="kikobot_", suffix=".urdf", delete=False) as tmp:
+            urdf_text = subprocess.check_output(["xacro", xacro_file_path, "is_ignition:=False"]).decode("utf-8")
+            tmp.write(urdf_text.encode("utf-8"))
+            return tmp.name
+    except Exception:
+        return None
+
+
 def main():
     # Initialize robot visualizer
-    urdf_path = os.path.join(os.path.dirname(__file__), "../urdf/Kikobot.urdf")
+    xacro_path = os.path.join(os.path.dirname(__file__), "../urdf/arm.urdf.xacro")
+    urdf_path = generate_urdf_from_xacro(os.path.realpath(xacro_path))
+    if urdf_path is None:
+        print("Failed to generate URDF from xacro. Ensure xacro is installed.")
+        return
     visualizer = RobotVisualizer(urdf_path)
     
     if not PYBULLET_AVAILABLE:

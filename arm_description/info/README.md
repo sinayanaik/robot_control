@@ -131,7 +131,7 @@ world [⚓]
 
 2. View with URDF visualizer:
    ```bash
-   urdf-viz src/arm_description/urdf/Kikobot.urdf
+   xacro src/arm_description/urdf/arm.urdf.xacro > /tmp/arm.urdf && urdf-viz /tmp/arm.urdf
    ```
 
 ## Technical Specifications

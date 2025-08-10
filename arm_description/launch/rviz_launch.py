@@ -8,10 +8,10 @@ from ament_index_python.packages import get_package_share_path
 def generate_launch_description():
 
     pkg_share = get_package_share_path('arm_description')
-    urdf_path = os.path.join(pkg_share, 'urdf', 'Kikobot.urdf')
+    xacro_path = os.path.join(pkg_share, 'urdf', 'arm.urdf.xacro')
     rviz_config_path = os.path.join(pkg_share, 'rviz', 'config.rviz')
     
-    robot_description = ParameterValue(Command(['cat ', urdf_path]), value_type=str)
+    robot_description = ParameterValue(Command(['xacro ', xacro_path]), value_type=str)
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
