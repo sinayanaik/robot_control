@@ -145,6 +145,11 @@ class App:
         self.msg_var = tk.StringVar()
         ttk.Label(frm, textvariable=self.msg_var, foreground='blue').grid(column=0, row=5, columnspan=6, sticky='w', pady=(6,0))
 
+        # Duration control (target_time for planner / Ruckig)
+        self.duration = tk.DoubleVar(value=3.0)
+        ttk.Label(frm, text='duration (s)').grid(column=3, row=6, sticky='e', padx=(12, 4))
+        self._make_slider_pair(frm, self.duration, 4, 6, 0.2, 10.0)
+
         ttk.Button(frm, text='Compute IK', command=self.on_compute_target).grid(column=0, row=6, padx=4, pady=6)
         ttk.Button(frm, text='Plan + Move', command=self.on_move).grid(column=1, row=6, padx=4, pady=6)
 
@@ -227,7 +232,7 @@ class App:
 
         max_vel = [1.0] * 6
         max_acc = [2.0] * 6
-        ok, msg, traj = self.node.call_plan(start_positions, target_positions, max_vel, max_acc, 5.0, 3.0)
+        ok, msg, traj = self.node.call_plan(start_positions, target_positions, max_vel, max_acc, 5.0, self.duration.get())
         if not ok:
             self.msg_var.set('Plan failed: ' + msg)
             return
