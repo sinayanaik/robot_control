@@ -1,0 +1,11 @@
+string[] joint_names
+float64[] seed_positions
+geometry_msgs/PoseStamped target
+string base_link
+string tip_link
+---
+bool success
+string message
+float64[] solution_positions
+
+
