@@ -55,7 +55,7 @@ def generate_launch_description():
         package='ros_gz_sim',
         executable='create',
         output='screen',
-        arguments=['-topic', 'robot_description', '-name', 'kikobot'],
+        arguments=['-topic', 'robot_description', '-name', 'arm'],
     )
 
     # Bridge Gazebo clock to ROS to eliminate controller_manager warnings

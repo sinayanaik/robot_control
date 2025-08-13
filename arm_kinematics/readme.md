@@ -107,6 +107,13 @@ points:
 ```
 4) Or request a planned trajectory and execute automatically (demo node does this on startup).
 
+Data logging (optional)
+- A lightweight logger node `motion_logger.py` can be launched alongside the GUI via `gui_ee.launch.py`.
+- It subscribes to `planned_trajectory`, `/joint_states`, and TF to log per‑stroke CSVs under `log_data/`.
+- Each CSV contains:
+  - `t` (s), `des_*` joint columns, `act_*` joint columns, `ee_act_x/y/z` (from TF), `ee_des_x/y/z` (from FK on desired joints).
+- Logging is controlled from the GUI via the “Log stroke to CSV” checkbox.
+
 Important assumptions and limits
 - The executor and planner assume joint ordering matches `arm_controller/config/arm_controllers.yaml`. Mismatched order will produce incorrect motion.
 - No collision checking or environment awareness is provided in this package (pure kinematics/dynamics time parameterization). For collision-aware planning use higher-level planners (e.g., Tesseract + TrajOpt, OMPL) and feed their joint paths to this package for time-parameterization and execution.

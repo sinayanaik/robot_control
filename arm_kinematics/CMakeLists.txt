@@ -26,6 +26,7 @@ install(
     src/trajectory_executor.py
     src/demo_plan_publish.py
     src/gui_ee.py
+    src/motion_logger.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -9,6 +9,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory
+from std_msgs.msg import Bool
 from arm_kinematics.srv import ComputeIK, PlanJointTrajectory
 
 
@@ -28,6 +29,7 @@ class EEGui(Node):
         self.ik_cli = self.create_client(ComputeIK, '/compute_ik')
         self.plan_cli = self.create_client(PlanJointTrajectory, '/plan_joint_trajectory')
         self.traj_pub = self.create_publisher(JointTrajectory, 'planned_trajectory', 10)
+        self.log_pub = self.create_publisher(Bool, '/motion_logger/enable', 1)
         self.joint_state_sub = self.create_subscription(JointState, '/joint_states', self._js_cb, 10)
         self.name_to_pos = {}
 
@@ -149,6 +151,14 @@ class App:
         self.duration = tk.DoubleVar(value=3.0)
         ttk.Label(frm, text='duration (s)').grid(column=3, row=6, sticky='e', padx=(12, 4))
         self._make_slider_pair(frm, self.duration, 4, 6, 0.2, 10.0)
+
+        # Logging enable checkbox
+        self.log_enabled = tk.BooleanVar(value=False)
+        def on_log_toggle():
+            msg = Bool()
+            msg.data = self.log_enabled.get()
+            self.node.log_pub.publish(msg)
+        ttk.Checkbutton(frm, text='Log stroke to CSV', variable=self.log_enabled, command=on_log_toggle).grid(column=0, row=7, sticky='w', pady=(4,0))
 
         ttk.Button(frm, text='Compute IK', command=self.on_compute_target).grid(column=0, row=6, padx=4, pady=6)
         ttk.Button(frm, text='Plan + Move', command=self.on_move).grid(column=1, row=6, padx=4, pady=6)

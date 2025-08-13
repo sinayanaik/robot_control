@@ -24,6 +24,17 @@ def generate_launch_description() -> LaunchDescription:
             executable='gui_ee.py',
             name='gui_ee'
         ),
+        Node(
+            package='arm_kinematics',
+            executable='motion_logger.py',
+            name='motion_logger',
+            parameters=[
+                {'base_link': 'base_link'},
+                {'tip_link': 'End-Coupler-v1'},
+                {'log_dir': 'log_data'},
+                {'enabled': False}
+            ]
+        ),
     ])
 
 

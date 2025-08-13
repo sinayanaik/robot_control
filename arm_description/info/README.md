@@ -124,14 +124,20 @@ world [⚓]
 - World frame is used as the fixed reference frame in RViz
 
 ## Usage
-1. Launch with RViz visualization:
+1. Full simulation + controllers + RViz:
+   ```bash
+   ros2 launch arm_description arm_launch.py
+   ```
+
+2. RViz visualization only:
    ```bash
    ros2 launch arm_description rviz_launch.py
    ```
 
-2. View with URDF visualizer:
+3. Inspect the URDF directly:
    ```bash
-   xacro src/arm_description/urdf/arm.urdf.xacro > /tmp/arm.urdf && urdf-viz /tmp/arm.urdf
+   xacro src/arm_description/urdf/arm.urdf.xacro is_ignition:=False > /tmp/arm.urdf
+   urdf-viz /tmp/arm.urdf  # if installed
    ```
 
 ## Technical Specifications
@@ -148,3 +154,5 @@ world [⚓]
 - The robot follows a standard serial manipulator configuration
 - End effector can be mounted on the End-Coupler-v1 link
 - The Base has zero mass as it's designed to be fixed
+ - Launch sets `GZ_SIM_RESOURCE_PATH` so Gazebo can find package meshes
+ - `robot_state_publisher` uses `xacro is_ignition:=False` to align with ROS/GZ setup
