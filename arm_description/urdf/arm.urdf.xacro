@@ -244,7 +244,7 @@
     </joint>
   </ros2_control>
   <gazebo>
-    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <parameters>$(find arm_controller)/config/arm_controllers.yaml</parameters>
     </plugin>
   </gazebo>

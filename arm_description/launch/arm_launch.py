@@ -74,16 +74,14 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
-        parameters=[controllers_yaml],
+        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager', '--ros-args', '--params-file', controllers_yaml],
         output='screen',
     )
 
     arm_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['arm_controller', '--controller-manager', '/controller_manager'],
-        parameters=[controllers_yaml],
+        arguments=['arm_controller', '--controller-manager', '/controller_manager', '--ros-args', '--params-file', controllers_yaml],
         output='screen',
     )
 
