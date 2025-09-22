@@ -165,42 +165,48 @@
     <parent link="Base" />
     <child link="Arm-1" />
     <axis xyz="0.0 0.0 1.0" />
-    <limit lower="-2.879793" upper="2.879793" effort="1000000" velocity="1000000" />
+    <limit lower="-2.879793" upper="2.879793" effort="150.0" velocity="2.0" />
+    <dynamics damping="0.8" friction="0.5" />
   </joint>
   <joint name="Arm-1_Revolute-2" type="revolute">
     <origin xyz="3.3306690738754695e-18 0.0417 0.049749999999999996" rpy="-1.5707963267948966 -2.775557561562912e-17 -1.5707963267948966" />
     <parent link="Arm-1" />
     <child link="Arm-2" />
     <axis xyz="1.0 8.531573731886488e-33 0.0" />
-    <limit lower="-2.181662" upper="2.181662" effort="1000000" velocity="1000000" />
+    <limit lower="-2.181662" upper="2.181662" effort="120.0" velocity="1.8" />
+    <dynamics damping="0.6" friction="0.4" />
   </joint>
   <joint name="Arm-2_Revolute-3" type="revolute">
     <origin xyz="0.0029999999999999983 -0.133 0.0" rpy="1.9668971100548318e-31 -1.5707963267948966 0" />
     <parent link="Arm-2" />
     <child link="Arm-3" />
     <axis xyz="0.0 0.0 -1.0" />
-    <limit lower="-2.443461" upper="2.443461" effort="1000000" velocity="1000000" />
+    <limit lower="-2.443461" upper="2.443461" effort="80.0" velocity="2.5" />
+    <dynamics damping="0.4" friction="0.3" />
   </joint>
   <joint name="Arm-3_Revolute-4" type="revolute">
     <origin xyz="0.0 -0.11599999999999998 -0.0030000000000000027" rpy="-1.9721522630525295e-31 -1.232595164407831e-32 1.4530830046144773e-33" />
     <parent link="Arm-3" />
     <child link="Arm-4" />
     <axis xyz="1.232595164407831e-32 -1.9721522630525295e-31 1.0" />
-    <limit lower="-2.443461" upper="2.443461" effort="1000000" velocity="1000000" />
+    <limit lower="-2.443461" upper="2.443461" effort="40.0" velocity="3.0" />
+    <dynamics damping="0.3" friction="0.2" />
   </joint>
   <joint name="Arm-4_Revolute-5" type="revolute">
     <origin xyz="0.0 -0.0368 0.04880000000000001" rpy="-3.141592653589793 1.5707963267948966 0" />
     <parent link="Arm-4" />
     <child link="Arm-5" />
     <axis xyz="0.0 1.0 0.0" />
-    <limit lower="-2.443461" upper="2.443461" effort="1000000" velocity="1000000" />
+    <limit lower="-2.443461" upper="2.443461" effort="25.0" velocity="3.5" />
+    <dynamics damping="0.2" friction="0.15" />
   </joint>
   <joint name="Arm-5_Revolute-6" type="revolute">
     <origin xyz="-0.04 0.048800000000000024 0.0" rpy="5.806664411703718e-66 -5.998855812705412e-34 9.67961990252435e-33" />
     <parent link="Arm-5" />
     <child link="End-Coupler-v1" />
     <axis xyz="-1.0 -9.679619902524347e-33 -0.0" />
-    <limit lower="-3.054326" upper="3.054326" effort="1000000" velocity="1000000" />
+    <limit lower="-3.054326" upper="3.054326" effort="15.0" velocity="4.0" />
+    <dynamics damping="0.1" friction="0.1" />
   </joint>
   <ros2_control name="KikobotSystem" type="system">
     <hardware>
