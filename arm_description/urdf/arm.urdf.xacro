@@ -1,4 +1,4 @@
-<robot name="Kikobot">
+<robot name="robo_arm">
   <link name="world" />
   <material name="ur_accent">
     <color rgba="0.11 0.53 0.80 1.0" />
@@ -13,7 +13,19 @@
   <joint name="world_to_base_link" type="fixed">
     <parent link="world" />
     <child link="base_link" />
-    <origin xyz="0 0 0" rpy="0 0 0" />
+    <origin xyz="0 0 0" rpy="0 0 0" />    <ros2_control name="KikobotSystem" type="system">
+      <hardware>
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      </hardware>
+      <joint name="...">...</joint>
+      ...
+    </ros2_control>    <ros2_control name="KikobotSystem" type="system">
+      <hardware>
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      </hardware>
+      <joint name="...">...</joint>
+      ...
+    </ros2_control>
   </joint>
   <joint name="base_link_to_Base" type="fixed">
     <parent link="base_link" />
@@ -208,7 +220,7 @@
     <limit lower="-3.054326" upper="3.054326" effort="15.0" velocity="4.0" />
     <dynamics damping="0.1" friction="0.1" />
   </joint>
-  <ros2_control name="KikobotSystem" type="system">
+  <ros2_control name="RobotSystem" type="system">
     <hardware>
       <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     </hardware>
