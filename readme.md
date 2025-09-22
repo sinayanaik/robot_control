@@ -48,7 +48,7 @@ This is a comprehensive **6-DOF robotic arm simulation and control stack** built
 - **GUI interface**: Interactive end-effector control with pose adjustment
 - **Motion logging**: Real-time data capture with CSV export
 
-### `arm_pykdl` - High-Performance IK Service
+### `kdl_cplusplus` - High-Performance IK Service
 - **C++ implementation**: Orocos KDL-based inverse kinematics
 - **Performance optimized**: Drop-in replacement for Python IK service
 - **Chain caching**: Efficient KDL chain management for multiple base/tip combinations
@@ -137,7 +137,7 @@ The system uses a **quintic (5th-order) polynomial time-scaling** approach for s
    - Runtime URDF expansion via xacro
    - Dependency: `kdl_parser_py`, `python3-pykdl`
 
-2. **C++ Service** (`arm_pykdl/ik_service_cpp`):
+2. **C++ Service** (`kdl_cplusplus/ik_service_cpp`):
    - Orocos KDL implementation
    - Performance-optimized for real-time use
    - Chain caching for efficiency
@@ -501,7 +501,7 @@ world → base_link → Base → Arm-1 → Arm-2 → Arm-3 → Arm-4 → Arm-5 �
 - `launch/gui_ee.launch.py` - Complete GUI system launch
 - `launch/kinematics.launch.py` - Kinematics services launch
 
-### `arm_pykdl`
+### `kdl_cplusplus`
 **Role**: High-performance C++ inverse kinematics  
 **Key Technologies**: `rclcpp`, `orocos_kdl`, `kdl_parser`
 
@@ -672,7 +672,7 @@ ros2 run arm_motion motion_node.py
 ```bash
 ros2 run arm_kinematics ik_service.py
 # OR for C++ version:
-ros2 run arm_pykdl ik_service_cpp
+ros2 run kdl_cplusplus ik_service_cpp
 ```
 
 **Call IK service:**
@@ -934,7 +934,7 @@ robot_control/
 │   │   │   ├── gui_ee.launch.py        # GUI system with logging
 │   │   │   └── kinematics.launch.py    # Kinematics services
 │   │   └── log_data/                   # CSV motion data output
-│   └── arm_pykdl/
+│   └── kdl_cplusplus/
 │       ├── src/
 │       │   └── ik_service_cpp.cpp      # C++ IK service
 │       └── scripts/

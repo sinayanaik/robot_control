@@ -344,6 +344,6 @@ htop -p $(pgrep -f controller_manager)
 
 ---
 
-*This controller configuration is optimized for the Kikobot 6-DOF arm and integrates seamlessly with the `arm_description`, `arm_kinematics`, and `arm_pykdl` packages.*
+*This controller configuration is optimized for the Kikobot 6-DOF arm and integrates seamlessly with the `arm_description`, `arm_kinematics`, and `kdl_cplusplus` packages.*
 
 

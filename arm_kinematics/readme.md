@@ -2,22 +2,27 @@
 
 ## Overview
 
-The `arm_kinematics` package provides comprehensive trajectory generation, execution, and inverse kinematics capabilities for the 6-DOF Kikobot robotic arm. This package implements quintic polynomial trajectory planning with optional Ruckig integration, high-frequency trajectory execution, PyKDL-based inverse kinematics, motion logging with CSV export, and an intuitive GUI interface for end-effector control.
+The `arm_kinematics` package provides comprehensive trajectory generation, execution, and motion logging capabilities for the 6-DOF Kikobot robotic arm. This package implements quintic polynomial trajectory planning with optional Ruckig integration, high-frequency trajectory execution, motion logging with CSV export, and an intuitive GUI interface for end-effector control.
 
 ## Package Architecture
 
 ### Core Components
-1. **Trajectory Planner** (`trajectory_service.py`) - Quintic/Ruckig trajectory generation
+1. **Trajectory Planner** (`trajectory_service.py`) - Quintic/Ruckig trajectory- `src/trajectory_service.py` — planner node.
+- `src/trajectory_executor.py` — executor node.
+- `src/demo_plan_publish.py` — example client that demonstrates plan→execute.
+- `src/motion_logger.py` — motion data logging and CSV export.
+- `src/gui_ee.py` — interactive GUI for end-effector control.
+- `launch/kinematics.launch.py` — launches planner, executor, and demo.
+- `launch/gui_ee.launch.py` — launches external IK (C++), planner, executor, and the GUI.ation
 2. **Trajectory Executor** (`trajectory_executor.py`) - High-frequency motion execution  
-3. **IK Service** (`ik_service.py`) - PyKDL inverse kinematics solver
-4. **Motion Logger** (`motion_logger.py`) - Real-time data capture and CSV export
-5. **GUI Interface** (`gui_ee.py`) - Interactive end-effector control
-6. **Demo Client** (`demo_plan_publish.py`) - Example trajectory execution
+3. **Motion Logger** (`motion_logger.py`) - Real-time data capture and CSV export
+4. **GUI Interface** (`gui_ee.py`) - Interactive end-effector control
+5. **Demo Client** (`demo_plan_publish.py`) - Example trajectory execution
 
 ### Data Flow Pipeline
 ```
-[GUI/Client] → [IK Service] → [Trajectory Planner] → [Trajectory Executor] → [Controller]
-                     ↓                ↓                      ↓               ↓
+[GUI/Client] → [Ext. IK Service] → [Trajectory Planner] → [Trajectory Executor] → [Controller]
+                     ↓                     ↓                       ↓                ↓
 [End-Effector Pose] [Joint Goals] [JointTrajectory] [Position Commands] [Joint States]
                                                                               ↓
                                       [Motion Logger] ← [TF2 Transforms] ← [Robot State]
@@ -151,35 +156,7 @@ def interpolate_trajectory(self, current_time):
 - `message`: Status message
 - `solution_positions[]`: Joint solution [rad]
 
-### PyKDL Implementation
-
-#### Solver Configuration
-- **Algorithm**: Levenberg-Marquardt (LMA)
-- **Backend**: PyKDL (Python bindings for KDL)
-- **Chain Building**: Runtime URDF expansion via xacro
-
-#### Usage Example
-```bash
-ros2 service call /compute_ik arm_kinematics/srv/ComputeIK "{
-  joint_names: ['Base_Revolute-1','Arm-1_Revolute-2','Arm-2_Revolute-3','Arm-3_Revolute-4','Arm-4_Revolute-5','Arm-5_Revolute-6'],
-  seed_positions: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-  target: { 
-    header: { frame_id: 'base_link' }, 
-    pose: { 
-      position: {x: 0.30, y: 0.10, z: 0.25}, 
-      orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0} 
-    } 
-  },
-  base_link: 'base_link',
-  tip_link: 'End-Coupler-v1'
-}"
-```
-
-#### Dependencies
-```bash
-# Required for PyKDL IK service
-sudo apt install ros-jazzy-kdl-parser-py python3-pykdl
-```
+**Note**: IK functionality is provided by the external `kdl_cplusplus` package with C++ Orocos KDL implementation for optimal performance.
 
 ## Motion Logging & Data Export
 
@@ -283,7 +260,7 @@ ros2 launch arm_kinematics gui_ee.launch.py
 
 ### Launch File: `gui_ee.launch.py`
 Coordinates startup of:
-- `arm_pykdl/ik_service_cpp` - High-performance C++ IK service
+- `kdl_cplusplus/ik_service_cpp` - High-performance C++ IK service
 - `trajectory_service.py` - Quintic trajectory planner  
 - `trajectory_executor.py` - Motion execution node
 - `motion_logger.py` - Data logging service
@@ -415,11 +392,8 @@ ros2 service call /plan_joint_trajectory arm_kinematics/srv/PlanJointTrajectory 
 
 #### IK Service Issues
 ```bash
-# Check IK service
+# Check IK service (provided by kdl_cplusplus package)
 ros2 service list | grep compute_ik
-
-# Verify dependencies
-python3 -c "import kdl_parser_py, PyKDL; print('PyKDL OK')"
 
 # Test simple IK
 ros2 service call /compute_ik arm_kinematics/srv/ComputeIK "{
@@ -490,7 +464,7 @@ ros2 param list /motion_logger
 
 ---
 
-*This package provides the core kinematics and motion planning capabilities for the Kikobot 6-DOF robotic arm, integrating seamlessly with `arm_description`, `arm_controller`, and `arm_pykdl` packages.*inematics — Trajectory Generation, Execution, and IK (ROS 2)
+*This package provides the core kinematics and motion planning capabilities for the Kikobot 6-DOF robotic arm, integrating seamlessly with `arm_description`, `arm_controller`, and `kdl_cplusplus` packages.*inematics — Trajectory Generation, Execution, and IK (ROS 2)
 
 Overview
 - This package provides joint-space trajectory generation, simple execution to ros2_control, and an optional inverse kinematics (IK) service for the Kikobot arm.
@@ -521,14 +495,9 @@ Provided nodes
      - On receiving a `JointTrajectory`, it interprets `time_from_start` as a schedule and linearly interpolates between points at 200 Hz (5 ms timer) to produce position commands.
      - The published vector order must match `arm_controller/config/arm_controllers.yaml`.
 
-3) (Optional) IK service: `ik_service.py`
-   - Service name: `compute_ik` (type: `arm_kinematics/srv/ComputeIK`).
-   - Input: `joint_names`, `seed_positions`, target `geometry_msgs/PoseStamped`, `base_link`, `tip_link`.
-   - Output: `success`, `message`, `solution_positions` (joint vector).
-   - Backend: PyKDL (LMA solver). At runtime, the node xacro-expands `arm_description/urdf/arm.urdf.xacro`, builds a KDL tree, extracts the chain base→tip, and runs `ChainIkSolverPos_LMA` from the seed to solve pose IK.
-   - Dependencies: `kdl_parser_py` and `python3-pykdl`. If unavailable, the node exits gracefully and the rest of the package still functions.
+**Note**: Inverse kinematics functionality is now provided by the external `kdl_cplusplus` package.
 
-Topics and services
+## Topics and services
 - Subscribed topics:
   - `planned_trajectory` (`trajectory_msgs/JointTrajectory`) — consumed by the executor.
 - Published topics:
@@ -543,7 +512,7 @@ Launch files
 - GUI + kinematics stack (IK service, planner, executor, GUI controls):
   - `ros2 launch arm_kinematics gui_ee.launch.py`
   - This starts:
-    - `arm_pykdl/ik_service_cpp` — C++ Orocos KDL IK service on `/compute_ik`.
+    - `kdl_cplusplus/ik_service_cpp` — C++ Orocos KDL IK service on `/compute_ik`.
     - `trajectory_service.py` — planner service `/plan_joint_trajectory` (quintic by default).
     - `trajectory_executor.py` — subscribes `planned_trajectory` and publishes `/arm_controller/commands`.
     - `gui_ee.py` — interactive end‑effector GUI (sliders + numeric entries for start/target pose) to compute IK and command motion.
@@ -615,8 +584,6 @@ Important assumptions and limits
 Troubleshooting
 - Controller spawner errors:
   - Ensure `arm_launch.py` has fully started and both `joint_state_broadcaster` and `arm_controller` are activated before launching this package.
-- IK node exits immediately:
-  - Install `ros-$ROS_DISTRO-kdl-parser-py` and `python3-pykdl`. If not installed, planning/execution still works; only IK is disabled.
 - No motion when publishing `JointTrajectory`:
   - Confirm topic name is `planned_trajectory` and that `joint_names` order matches the controller config. Ensure each `time_from_start` is strictly increasing.
 

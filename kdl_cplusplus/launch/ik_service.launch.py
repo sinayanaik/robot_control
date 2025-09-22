@@ -5,7 +5,7 @@ from launch_ros.actions import Node
 def generate_launch_description() -> LaunchDescription:
     return LaunchDescription([
         Node(
-            package='arm_pykdl',
+            package='kdl_cplusplus',
             executable='ik_service_cpp',
             name='ik_service_cpp',
             parameters=[{

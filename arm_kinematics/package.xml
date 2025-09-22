@@ -21,8 +21,6 @@
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
   <exec_depend>xacro</exec_depend>
-  <exec_depend>kdl_parser_py</exec_depend>
-  <exec_depend>python3-pykdl</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <!-- Optional: if available via apt -->
   <exec_depend>python3-ruckig</exec_depend>
@@ -32,5 +30,3 @@
     <member_of_group>rosidl_interface_packages</member_of_group>
   </export>
 </package>
-
-

@@ -1,4 +1,4 @@
-arm_pykdl — C++ IK Service (ROS 2)
+kdl_cplusplus — C++ IK Service (ROS 2)rm_pykdl — C++ IK Service (ROS 2)
 
 Overview
 - Provides `/compute_ik` compatible with `arm_kinematics/srv/ComputeIK`.
@@ -8,11 +8,11 @@ Overview
 Build & Run
 ```bash
 cd ~/Public/ws  # or your workspace
-colcon build --packages-select arm_pykdl
+colcon build --packages-select kdl_cplusplus
 source install/setup.bash
-ros2 run arm_pykdl ik_service_cpp
+ros2 run kdl_cplusplus ik_service_cpp
 # Or with launch file (parameters optional):
-ros2 launch arm_pykdl ik_service.launch.py
+ros2 launch kdl_cplusplus ik_service.launch.py
 ```
 
 URDF loading

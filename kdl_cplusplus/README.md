@@ -1,8 +1,8 @@
-# arm_pykdl - High-Performance C++ Inverse Kinematics Service
+# kdl_cplusplus - High-Performance C++ Inverse Kinematics Service
 
 ## Overview
 
-The `arm_pykdl` package provides a high-performance C++ implementation of inverse kinematics for the 6-DOF Kikobot robotic arm. Built on the robust Orocos KDL library, this package offers a drop-in replacement for the Python IK service with significantly improved computational performance, making it suitable for real-time applications and high-frequency IK queries.
+The `kdl_cplusplus` package provides a high-performance C++ implementation of inverse kinematics for the 6-DOF Kikobot robotic arm. Built on the robust Orocos KDL library, this package offers a drop-in replacement for the Python IK service with significantly improved computational performance, making it suitable for real-time applications and high-frequency IK queries.
 
 ## Key Features
 

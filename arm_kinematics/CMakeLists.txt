@@ -22,7 +22,6 @@ ament_export_dependencies(rosidl_default_runtime)
 install(
   PROGRAMS
     src/trajectory_service.py
-    src/ik_service.py
     src/trajectory_executor.py
     src/demo_plan_publish.py
     src/gui_ee.py

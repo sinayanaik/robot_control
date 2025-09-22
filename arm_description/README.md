@@ -246,7 +246,7 @@ ros2 control list_controllers
 This package is designed to work with:
 - `arm_controller` - Position controller configuration
 - `arm_kinematics` - Trajectory planning and execution
-- `arm_pykdl` - Inverse kinematics services
+- `kdl_cplusplus` - Inverse kinematics services
 
 ### Coordinate Frame Conventions
 - **Right-handed coordinate system**
